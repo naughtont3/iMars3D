@@ -90,7 +90,7 @@ class ImageSlider:
         min, max = self.c_range
         arr[arr<min] = 0
         arr[arr>max] = max
-        img = ((arr-min)/(max-min)*(2**15-1)).astype('int16')
+        img = ((arr-min)/(max-min)*(2**15-1)).astype('int32')
         f = StringIO()
         PIL.Image.fromarray(img).save(f, self.fmt)
         return f.getvalue()
@@ -143,6 +143,8 @@ class ImageSlider:
         nrows, ncols = arr.shape
         width, height = self.width, self.height
         name = self.name
+        #Communicates with backend (python code) to obtain the image 
+        #coordinates of the mouse for display with the label "X: Y:"
         js = '''
         <script type="text/Javascript">
         ''' + js_handle_remote_exec_output + '''
@@ -165,7 +167,7 @@ class ImageSlider:
         ''' % locals()
         return ipyw.HTML(js)
     
-
+#Obtains the return data (or error message) for the backend python code
 js_handle_remote_exec_output = """
 function create_ouput_handle_func(callback) {
     return function(out){
@@ -193,3 +195,5 @@ function create_ouput_handle_func(callback) {
 }
 """
 
+def test1():
+    panel = ImageSlider()
